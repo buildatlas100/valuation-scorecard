@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Valuation Scorecard — Pabrai Scale</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f4f5fb; color: #1a1a2e; margin: 0; padding: 32px 18px; }
+  .wrap { max-width: 1080px; margin: 0 auto; }
+  h1 { font-size: 24px; margin: 0 0 4px; }
+  .sub { font-size: 13px; color: #4b4b63; line-height: 1.55; margin: 0 0 20px; max-width: 820px; }
+  .card { background: #fff; border-radius: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); padding: 20px 22px; margin-bottom: 20px; }
+  .card h2 { font-size: 15px; margin: 0 0 12px; color: #1a1a2e; }
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  th, td { padding: 7px 9px; text-align: left; }
+  th { font-size: 10px; text-transform: uppercase; letter-spacing: .04em; color: #8b8ba3; border-bottom: 1px solid rgba(0,0,0,0.08); }
+  td.r, th.r { text-align: right; }
+  tbody tr { border-bottom: 1px solid rgba(0,0,0,0.04); }
+  .tierband td { font-weight: 800; font-size: 11px; letter-spacing: .03em; padding: 7px 10px; }
+  .tk { font-weight: 800; }
+  .muted { color: #c3c3d0; }
+  .foot { font-size: 11px; color: #9ca3af; line-height: 1.6; margin-top: 4px; }
+  a { color: #4f46e5; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Valuation Scorecard — Pabrai Scale</h1>
+  <p class="sub">A watchlist ranked on Mohnish Pabrai's rule: <b>sell only when a name is egregiously overvalued, not merely fully valued.</b> PEG is the key lens, a high multiple justified by growth (low PEG) is a hold; a high multiple the growth can't justify (PEG ~4+) is a sell candidate. Tiers run most overvalued to cheapest. Metrics as of 2026-06-30; unprofitable names (dashes in PE columns) are judged on price-to-sales.</p>
+
+  <div class="card">
+    <h2>Scorecard</h2>
+    <table>
+      <thead><tr>
+        <th style="width:7%">Ticker</th>
+        <th class="r" style="width:7%">Fwd PE</th><th class="r" style="width:6%">PEG</th><th class="r" style="width:6%">P/S</th>
+        <th class="r" style="width:8%">Gr mgn</th><th class="r" style="width:8%">FCF yld</th><th class="r" style="width:7%">Rule 40</th>
+        <th class="r" style="width:8%">Rev growth</th><th class="r" style="width:6%">RSI</th>
+        <th class="r" style="width:8%">vs 200D</th><th class="r" style="width:7%">52w hi</th>
+        <th class="r" style="width:12%">Egregious at</th>
+      </tr></thead>
+      <tbody id="scoreBody"></tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>Egregious names, valued 4 years out (2030 P/E)</h2>
+    <p class="sub" style="margin-bottom:12px">Fast growers get mis-valued 4 years out because the Street stops modeling at ~2-3 years. Each egregious name's P/E on <b>derived 2030 EPS</b> (non-GAAP where relevant), consensus vs a sourced bull case. No analyst publishes a clean 2030 EPS, so these are extrapolations (~&plusmn;15-20%), with sources linked. Takeaway: on 2030 numbers, HIMS is genuinely cheap, ARM/NET/CRWD compress into the 50s on the bull case, and TSLA's bull is a robotaxi lottery ticket.</p>
+    <table>
+      <thead><tr>
+        <th style="width:8%">Ticker</th><th class="r" style="width:11%">Fwd PE now</th>
+        <th class="r" style="width:14%">2030 PE consensus</th><th class="r" style="width:11%">2030 PE bull</th>
+        <th style="width:56%">Why 2030 differs &middot; sources</th>
+      </tr></thead>
+      <tbody id="v2030Body"></tbody>
+    </table>
+  </div>
+
+  <p class="foot">Each row combines valuation (Fwd PE / PEG / P/S), quality (gross margin, FCF yield = free cash flow &divide; market cap, Rule of 40 = growth% + FCF-margin% for software where &ge;40 is healthy / "n/m" for non-software or one-off-distorted like MU's memory supercycle), and trend (RSI 14-day; vs 200-day MA = how stretched, deep red stretched / teal below trend; 52-wk high = near 0 is peak froth, deeply negative is beaten down). Not financial advice, personal opinion for discussion. Multiples rounded; forward and 2030 figures are consensus/derived estimates and carry real uncertainty. "Egregious at" = the approximate price where a name's multiple crosses into the egregious tier, fundamentals held constant. Technicals as of ~2026-07-01.</p>
+</div>
+
+<script>
+const VAL_TIERS = {
+  egregious:  { label: 'Egregiously overvalued', short: 'Egregious',  rank: 0, bg: 'rgba(220,38,38,0.10)',  bar: '#dc2626' },
+  overvalued: { label: 'Overvalued / rich',        short: 'Overvalued', rank: 1, bg: 'rgba(249,115,22,0.10)', bar: '#ea580c' },
+  fair:       { label: 'Fully valued (hold)',      short: 'Fair',       rank: 2, bg: 'rgba(245,158,11,0.10)', bar: '#d97706' },
+  cheap:      { label: 'Cheap / undervalued',      short: 'Cheap',      rank: 3, bg: 'rgba(16,185,129,0.10)', bar: '#059669' },
+  spec:       { label: 'Speculative / distressed', short: 'Spec',       rank: 4, bg: 'rgba(107,114,128,0.10)',bar: '#6b7280' }
+};
+const D = {
+  TSLA:{t:'egregious',trailPE:384,fwdPE:174,peg:7.1,ps:16,gr:16,rsi:57,eg:'already'},
+  ARM:{t:'egregious',trailPE:419,fwdPE:137,peg:4.4,ps:77,gr:20,rsi:52,eg:'already'},
+  NET:{t:'egregious',trailPE:null,fwdPE:155,peg:4.5,ps:37,gr:34,rsi:58,eg:'already'},
+  CRWD:{t:'egregious',trailPE:null,fwdPE:123,peg:4.2,ps:38,gr:26,rsi:70,eg:'already'},
+  HIMS:{t:'egregious',trailPE:null,fwdPE:74,peg:4.9,ps:3.4,gr:4,rsi:65,eg:'already'},
+  NBIS:{t:'overvalued',trailPE:92,fwdPE:null,peg:null,ps:79,gr:600,rsi:61,eg:'~$420'},
+  HOOD:{t:'overvalued',trailPE:49,fwdPE:39,peg:2.6,ps:20,gr:15,rsi:58,eg:'~$150'},
+  PLTR:{t:'overvalued',trailPE:131,fwdPE:56,peg:0.94,ps:53,gr:85,rsi:39,eg:'~$160'},
+  COIN:{t:'overvalued',trailPE:55,fwdPE:29,peg:2.2,ps:5.8,gr:-27,rsi:38,eg:'~$225'},
+  MRVL:{t:'overvalued',trailPE:103,fwdPE:60,peg:1.5,ps:30,gr:28,rsi:59,eg:'~$425'},
+  ASML:{t:'overvalued',trailPE:66,fwdPE:39,peg:1.4,ps:20,gr:26,rsi:64,eg:'~$2,900'},
+  IREN:{t:'overvalued',trailPE:157,fwdPE:201,peg:2.2,ps:33,gr:13,rsi:37,eg:'~$68'},
+  U:{t:'overvalued',trailPE:null,fwdPE:54,peg:null,ps:6.5,gr:17,rsi:55,eg:'—'},
+  AMD:{t:'fair',trailPE:185,fwdPE:50,peg:0.85,ps:24,gr:38,rsi:65,eg:'—'},
+  NOW:{t:'fair',trailPE:59,fwdPE:20,peg:0.94,ps:7.3,gr:22,rsi:48,eg:'—'},
+  AMKR:{t:'fair',trailPE:49,fwdPE:38,peg:1.55,ps:3.0,gr:27,rsi:58,eg:'—'},
+  AMZN:{t:'fair',trailPE:28,fwdPE:24,peg:1.07,ps:3.5,gr:17,rsi:45,eg:'—'},
+  MSFT:{t:'fair',trailPE:22,fwdPE:20,peg:1.23,ps:8.7,gr:18,rsi:41,eg:'—'},
+  NVDA:{t:'cheap',trailPE:31,fwdPE:16,peg:0.33,ps:19,gr:85,rsi:45,eg:'—'},
+  MU:{t:'cheap',trailPE:26,fwdPE:7.6,peg:0.05,ps:14,gr:346,rsi:60,eg:'—'},
+  META:{t:'cheap',trailPE:20,fwdPE:17,peg:0.82,ps:6.6,gr:33,rsi:43,eg:'—'},
+  Z:{t:'cheap',trailPE:127,fwdPE:12,peg:0.31,ps:2.7,gr:18,rsi:39,eg:'—'},
+  UPST:{t:'cheap',trailPE:88,fwdPE:15,peg:0.5,ps:3.0,gr:44,rsi:63,eg:'—'},
+  RKT:{t:'cheap',trailPE:267,fwdPE:15,peg:0.23,ps:5.4,gr:null,rsi:62,eg:'—'},
+  COUR:{t:'cheap',trailPE:null,fwdPE:7.3,peg:0.32,ps:2.1,gr:9,rsi:53,eg:'—'},
+  FIVN:{t:'cheap',trailPE:32,fwdPE:6,peg:0.43,ps:1.4,gr:9,rsi:53,eg:'—'},
+  AGNT:{t:'spec',trailPE:null,fwdPE:54,peg:null,ps:0.18,gr:5,rsi:58,eg:'—'},
+  CDLX:{t:'spec',trailPE:null,fwdPE:null,peg:null,ps:0.13,gr:-45,rsi:31,eg:'—'},
+  BMNR:{t:'spec',trailPE:null,fwdPE:null,peg:null,ps:null,gr:628,rsi:32,eg:'—'},
+  CRWV:{t:'spec',trailPE:null,fwdPE:null,peg:null,ps:8.7,gr:112,rsi:45,eg:'—'}
+};
+const VAL_2030 = {
+  TSLA:{fwdPE:174,c:83.6,b:1.8,note:"Bull is entirely ARK's robotaxi model (2030 EPS ~$230); strip robotaxi and ARK's own target collapses to ~$350.",sources:[['stockanalysis','https://stockanalysis.com/stocks/tsla/forecast/'],['ARK 2029 model','https://www.ark-invest.com/articles/valuation-models/arks-tesla-price-target-2029'],['Zacks','https://www.zacks.com/stock/quote/TSLA']]},
+  ARM:{fwdPE:137,c:83.0,b:47.3,note:"Non-GAAP; FY ends March. Bull = SoftBank's $25B-revenue plan + Armv9/CSS royalty-rate expansion. Stock already above the ~$296 avg analyst target.",sources:[['stockanalysis','https://stockanalysis.com/stocks/arm/forecast/'],['SoftBank $25B deck','https://group.softbank/media/Project/sbg/sbg/pdf/ir/presentations/2025/arm20260330_en.pdf'],['TIKR','https://www.tikr.com/blog/how-to-value-arm-a-royalty-business-trading-like-a-growth-stock']]},
+  NET:{fwdPE:155,c:77.4,b:50.5,note:"Non-GAAP. The Jun 2026 investor day roughly doubled the operating-margin target (20% to 30%+); $5B revenue run-rate targeted by end-2028.",sources:[['stockanalysis','https://stockanalysis.com/stocks/net/forecast/'],['Investor day','https://www.thestreet.com/investing/stocks/morgan-stanley-raises-cloudflare-stock-price-target-after-investors-day'],['Simply Wall St','https://simplywall.st/stocks/us/software/nyse-net/cloudflare/future']]},
+  CRWD:{fwdPE:123,c:77.4,b:58.1,note:"Non-GAAP (pre the 4-for-1 split; P/E is split-invariant). Bull assumes the $10B ARR target (officially FY2031) hit a year early with top-end 34-38% FCF margins.",sources:[['stockanalysis','https://stockanalysis.com/stocks/crwd/forecast/'],['Investor day','https://www.fool.com/investing/2025/09/20/crowdstrike-talked-a-big-game-at-its-investor-day/'],['Finbox','https://finbox.com/NASDAQGS:CRWD/explorer/eps_proj_growth/']]},
+  HIMS:{fwdPE:74,c:20.6,b:12.6,note:"No published 2030 consensus; derived from management's $6.5B-revenue 2030 target (~6-9% net margin). Cheap by 2030 IF it re-accelerates from the +4% quarter; Street avg target (~$27) sits below spot.",sources:[['stockanalysis','https://stockanalysis.com/stocks/hims/forecast/'],['Mgmt roadmap','https://news.hims.com/newsroom/building-the-future-of-healthcare-our-roadmap-to-6-5b'],['TIKR','https://www.tikr.com/blog/hims-hers-stock-fell-78-from-its-peak-what-comes-after-the-glp-1-unwind']]}
+};
+const dash = v => v == null ? '<span class="muted">—</span>' : v;
+const rsiCell = v => { if (v == null) return '—'; const c = v >= 70 ? '#dc2626' : v <= 30 ? '#059669' : '#6b7280'; return `<span style="color:${c};font-weight:700">${v}</span>`; };
+const QT = {
+  TSLA:{gm:19,fcf:0.4,r40:9,p200:0,hi:-14}, ARM:{gm:98,fcf:0.3,r40:43,p200:92,hi:-23},
+  NET:{gm:73,fcf:0.4,r40:45,p200:19,hi:-9}, CRWD:{gm:75,fcf:0.8,r40:56,p200:55,hi:-1},
+  HIMS:{gm:72,fcf:1.0,r40:36,p200:8,hi:-47}, NBIS:{gm:84,fcf:-5.2,r40:null,p200:83,hi:-15},
+  HOOD:{gm:95,fcf:3.3,r40:null,p200:0,hi:-33}, PLTR:{gm:84,fcf:0.9,r40:119,p200:-22,hi:-40},
+  COIN:{gm:86,fcf:4.5,r40:21,p200:-35,hi:-64}, MRVL:{gm:52,fcf:0.7,r40:53,p200:134,hi:-10},
+  ASML:{gm:53,fcf:1.4,r40:45,p200:45,hi:-4}, U:{gm:72,fcf:3.7,r40:32,p200:-9,hi:-40},
+  AMD:{gm:53,fcf:0.9,r40:58,p200:100,hi:-5}, NOW:{gm:77,fcf:4.3,r40:54,p200:-22,hi:-50},
+  AMKR:{gm:14,fcf:0.8,r40:15,p200:63,hi:-13}, AMZN:{gm:51,fcf:-0.1,r40:14,p200:2,hi:-13},
+  MSFT:{gm:68,fcf:2.6,r40:41,p200:-15,hi:-30}, NVDA:{gm:74,fcf:2.5,r40:118,p200:2,hi:-18},
+  MU:{gm:73,fcf:2.0,r40:null,p200:144,hi:-11}, META:{gm:82,fcf:3.4,r40:49,p200:-6,hi:-23},
+  IREN:{gm:68,fcf:-14.8,r40:null,p200:-11,hi:-43}, Z:{gm:73,fcf:4.6,r40:29,p200:-43,hi:-65},
+  UPST:{gm:82,fcf:-8.0,r40:34,p200:-9,hi:-58}, RKT:{gm:100,fcf:-3.2,r40:null,p200:-9,hi:-34},
+  COUR:{gm:53,fcf:4.2,r40:22,p200:-19,hi:-54}, FIVN:{gm:55,fcf:12.7,r40:28,p200:12,hi:-24},
+  AGNT:{gm:7,fcf:9.8,r40:null,p200:-33,hi:-53}, CDLX:{gm:47,fcf:38,r40:null,p200:-61,hi:-86},
+  BMNR:{gm:null,fcf:-4.1,r40:null,p200:-53,hi:-90}, CRWV:{gm:69,fcf:-21.7,r40:null,p200:-11,hi:-46}
+};
+(function scorecard() {
+  const rows = Object.keys(D).map(tk => ({ tk, ...D[tk] }));
+  rows.sort((a, b) => {
+    const ra = VAL_TIERS[a.t].rank, rb = VAL_TIERS[b.t].rank;
+    if (ra !== rb) return ra - rb;
+    const pa = a.peg == null ? -1 : a.peg, pb = b.peg == null ? -1 : b.peg;
+    return VAL_TIERS[a.t].rank <= 2 ? (pb - pa) : (pa - pb);
+  });
+  const fcfC = v => v == null ? '#c3c3d0' : v >= 3 ? '#059669' : v >= 0 ? '#b45309' : '#dc2626';
+  const r40C = v => v == null ? '#9ca3af' : v >= 40 ? '#059669' : v >= 30 ? '#b45309' : '#6b7280';
+  const p200C = v => v == null ? '#9ca3af' : v >= 50 ? '#dc2626' : v >= 20 ? '#ea580c' : v > -15 ? '#6b7280' : '#0891b2';
+  const hiC = v => v == null ? '#9ca3af' : v > -8 ? '#dc2626' : v < -30 ? '#059669' : '#6b7280';
+  const pctCell = (v, c) => v == null ? '<span class="muted">—</span>' : `<span style="color:${c(v)};font-weight:700">${v > 0 ? '+' : ''}${v}%</span>`;
+  let html = '', last = null;
+  rows.forEach(r => {
+    const tier = VAL_TIERS[r.t], q = QT[r.tk] || {};
+    if (r.t !== last) { html += `<tr class="tierband"><td colspan="12" style="background:${tier.bg};border-left:3px solid ${tier.bar};color:${tier.bar}">${tier.label.toUpperCase()}</td></tr>`; last = r.t; }
+    html += `<tr style="background:${tier.bg}">
+      <td class="tk">${r.tk}</td>
+      <td class="r">${dash(r.fwdPE)}</td>
+      <td class="r" style="font-weight:700">${dash(r.peg)}</td>
+      <td class="r">${dash(r.ps)}</td>
+      <td class="r">${q.gm == null ? '<span class="muted">—</span>' : q.gm + '%'}</td>
+      <td class="r">${pctCell(q.fcf, fcfC)}</td>
+      <td class="r"><span style="color:${r40C(q.r40)};font-weight:700">${q.r40 == null ? 'n/m' : q.r40}</span></td>
+      <td class="r">${r.gr == null ? '—' : (r.gr > 0 ? '+' : '') + r.gr + '%'}</td>
+      <td class="r">${rsiCell(r.rsi)}</td>
+      <td class="r">${pctCell(q.p200, p200C)}</td>
+      <td class="r">${q.hi == null ? '—' : `<span style="color:${hiC(q.hi)};font-weight:700">${q.hi}%</span>`}</td>
+      <td class="r" style="font-size:11px;color:${tier.bar}">${r.eg === 'already' ? 'already egregious' : r.eg}</td>
+    </tr>`;
+  });
+  document.getElementById('scoreBody').innerHTML = html;
+})();
+(function v2030() {
+  const order = ['TSLA', 'ARM', 'NET', 'CRWD', 'HIMS'];
+  document.getElementById('v2030Body').innerHTML = order.map(t => {
+    const d = VAL_2030[t];
+    const src = d.sources.map(s => `<a href="${s[1]}" target="_blank" rel="noopener">${s[0]}</a>`).join(' &middot; ');
+    const bcol = d.b < 25 ? '#059669' : d.b < 55 ? '#b45309' : '#dc2626';
+    return `<tr>
+      <td class="tk">${t}</td><td class="r">${d.fwdPE}x</td><td class="r">${d.c}x</td>
+      <td class="r" style="color:${bcol};font-weight:700">${d.b}x</td>
+      <td style="font-size:11px;color:#6b6b8a;line-height:1.45">${d.note}<div style="margin-top:4px;font-size:10.5px">Sources: ${src}</div></td>
+    </tr>`;
+  }).join('');
+})();
+</script>
+</body>
+</html>
