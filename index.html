@@ -28,7 +28,7 @@
 <body>
 <div class="wrap">
   <h1>Valuation Scorecard — Pabrai Scale</h1>
-  <p class="sub">A watchlist ranked on Mohnish Pabrai's rule: <b>sell only when a name is egregiously overvalued, not merely fully valued.</b> PEG is the key lens, a high multiple justified by growth (low PEG) is a hold; a high multiple the growth can't justify (PEG ~4+) is a sell candidate. Tiers run most overvalued to cheapest. Metrics as of 2026-08-29, "Egregious at" targets from 2026-07-10 prices/multiples (tiers re-reviewed 2026-08-29 against current numbers, none moved); unprofitable names (dashes in PE columns) are judged on price-to-sales.</p>
+  <p class="sub">A watchlist ranked on Mohnish Pabrai's rule: <b>sell only when a name is egregiously overvalued, not merely fully valued.</b> PEG is the key lens, a high multiple justified by growth (low PEG) is a hold; a high multiple the growth can't justify (PEG ~4+) is a sell candidate. Tiers run most overvalued to cheapest. Metrics as of 2026-09-03; "Egregious at" targets recomputed 2026-09-03 from live prices/multiples (tier review 2026-09-03: HOOD, MRVL and ASML moved to Fair as estimates caught up to price, AMD moved to Cheap on a 0.48 PEG, and COIN's tripwire fell from ~$470 to ~$275 after forward-EPS cuts); unprofitable names (dashes in PE columns) are judged on price-to-sales.</p>
 
   <div class="card">
     <h2>Scorecard</h2>
@@ -58,7 +58,7 @@
     </table>
   </div>
 
-  <p class="foot">Each row combines valuation (Fwd PE / PEG / P/S), quality (gross margin, FCF yield = free cash flow &divide; market cap, Rule of 40 = growth% + FCF-margin% for software where &ge;40 is healthy / "n/m" for non-software or one-off-distorted like MU's memory supercycle), and trend (RSI 14-day; vs 200-day MA = how stretched, deep red stretched / teal below trend; 52-wk high = near 0 is peak froth, deeply negative is beaten down). Not financial advice, personal opinion for discussion. Multiples rounded; forward and 2030 figures are consensus/derived estimates and carry real uncertainty. "Egregious at" = the price where a name would cross into the egregious tier, computed from 2026-07-10 prices and multiples with estimates held constant: fwd PE hits ~100, PEG hits ~4.5, or P/S hits ~35 on sub-40% growth, whichever comes first. It is a tripwire for tier promotion, not a price target; if earnings grow into the price, the tripwire moves up. Megacaps (&gt;$2T) get a second, binding constraint: "cap-gravity" = the price where market cap would hit ~$7T (~12% of the S&amp;P 500, beyond any single-stock weight ever sustained); the lower rule wins, since a 100x-forward NVDA would be a $30T+ company. Cyclicals and no-earnings names get a judgment note. Technicals as of ~2026-08-29.</p>
+  <p class="foot">Each row combines valuation (Fwd PE / PEG / P/S), quality (gross margin, FCF yield = free cash flow &divide; market cap, Rule of 40 = growth% + FCF-margin% for software where &ge;40 is healthy / "n/m" for non-software or one-off-distorted like MU's memory supercycle), and trend (RSI 14-day; vs 200-day MA = how stretched, deep red stretched / teal below trend; 52-wk high = near 0 is peak froth, deeply negative is beaten down). Not financial advice, personal opinion for discussion. Multiples rounded; forward and 2030 figures are consensus/derived estimates and carry real uncertainty. "Egregious at" = the price where a name would cross into the egregious tier, recomputed 2026-09-03 from live prices and multiples with estimates held constant: fwd PE hits ~100, PEG hits ~4.5, or P/S hits ~35 on sub-40% growth, whichever comes first. It is a tripwire for tier promotion, not a price target; if earnings grow into the price, the tripwire moves up. Megacaps (&gt;$2T) get a second, binding constraint: "cap-gravity" = the price where market cap would hit ~$7T (~12% of the S&amp;P 500, beyond any single-stock weight ever sustained); the lower rule wins, since a 100x-forward NVDA would be a $30T+ company. Cyclicals and no-earnings names get a judgment note. Technicals as of 2026-09-03.</p>
 </div>
 
 <script>
@@ -70,37 +70,37 @@ const VAL_TIERS = {
   spec:       { label: 'Speculative / distressed', short: 'Spec',       rank: 4, bg: 'rgba(107,114,128,0.10)',bar: '#6b7280' }
 };
 const D = {
-  TSLA:{t:'egregious',trailPE:358,fwdPE:161.6,peg:5.2,ps:13.3,gr:26,rsi:51,eg:'already'},
-  ARM:{t:'egregious',trailPE:371,fwdPE:78.1,peg:2.1,ps:49.5,gr:22,rsi:40,eg:'already'},
-  NET:{t:'egregious',trailPE:null,fwdPE:179.4,peg:2.38,ps:42.5,gr:36,rsi:54,eg:'already'},
-  CRWD:{t:'egregious',trailPE:null,fwdPE:131.9,peg:7.41,ps:41.4,gr:26,rsi:58,eg:'already'},
-  HIMS:{t:'overvalued',trailPE:null,fwdPE:28.8,peg:2.15,ps:2.6,gr:38,rsi:46,eg:'~$72'},
-  BLLN:{t:'overvalued',trailPE:239,fwdPE:70.1,peg:null,ps:11.1,gr:64,rsi:39,eg:'~$230'},
-  NBIS:{t:'overvalued',trailPE:83,fwdPE:null,peg:0.63,ps:42.0,gr:454,rsi:47,eg:'~$320 (judgment)'},
-  HOOD:{t:'overvalued',trailPE:55,fwdPE:31.8,peg:2.54,ps:19.0,gr:32,rsi:54,eg:'~$165'},
-  PLTR:{t:'overvalued',trailPE:145,fwdPE:80.5,peg:2.49,ps:72.7,gr:93,rsi:69,eg:'~$210'},
-  COIN:{t:'overvalued',trailPE:61,fwdPE:63.2,peg:10.62,ps:7.8,gr:-17,rsi:57,eg:'~$470'},
-  MRVL:{t:'overvalued',trailPE:84,fwdPE:32.6,peg:1.43,ps:20.6,gr:36,rsi:48,eg:'~$340'},
-  ASML:{t:'overvalued',trailPE:60,fwdPE:28.2,peg:2.08,ps:18.4,gr:21,rsi:44,eg:'~$3,050'},
-  U:{t:'fair',trailPE:null,fwdPE:24.9,peg:null,ps:9.4,gr:24,rsi:60,eg:'~$130'},
-  AMD:{t:'fair',trailPE:173,fwdPE:30.1,peg:1.02,ps:18.4,gr:50,rsi:45,eg:'~$800'},
-  NOW:{t:'fair',trailPE:63,fwdPE:28.9,peg:1.13,ps:10.2,gr:24,rsi:72,eg:'~$460'},
-  AMZN:{t:'fair',trailPE:32,fwdPE:25.6,peg:1.39,ps:3.7,gr:20,rsi:55,eg:'~$600'},
-  MSFT:{t:'fair',trailPE:23,fwdPE:21.8,peg:1.64,ps:11.5,gr:18,rsi:72,eg:'~$940 (cap-gravity)'},
-  AMKR:{t:'cheap',trailPE:40,fwdPE:17.1,peg:0.76,ps:1.6,gr:26,rsi:40,eg:'~$245'},
-  NVDA:{t:'cheap',trailPE:30,fwdPE:14.2,peg:0.63,ps:17.3,gr:106,rsi:52,eg:'~$290 (cap-gravity)'},
-  MU:{t:'cheap',trailPE:22,fwdPE:6.0,peg:0.14,ps:11.7,gr:346,rsi:50,eg:'n/m (cycle-peak EPS)'},
-  META:{t:'cheap',trailPE:21,fwdPE:16.5,peg:0.85,ps:6.5,gr:28,rsi:49,eg:'~$2,760 (cap-gravity)'},
-  Z:{t:'cheap',trailPE:134,fwdPE:12.8,peg:0.93,ps:2.9,gr:18,rsi:54,eg:'~$155'},
-  UPST:{t:'cheap',trailPE:85,fwdPE:8.5,peg:null,ps:2.2,gr:42,rsi:46,eg:'~$350'},
-  RKT:{t:'cheap',trailPE:null,fwdPE:15.9,peg:0.53,ps:3.8,gr:92,rsi:47,eg:'~$105'},
-  COUR:{t:'cheap',trailPE:null,fwdPE:7.9,peg:null,ps:2.1,gr:60,rsi:64,eg:'~$85'},
-  FIVN:{t:'cheap',trailPE:36,fwdPE:8.9,peg:0.29,ps:2.1,gr:10,rsi:63,eg:'~$380'},
-  AGNT:{t:'spec',trailPE:null,fwdPE:14.1,peg:null,ps:0.1,gr:11,rsi:45,eg:'~$35'},
-  IREN:{t:'spec',trailPE:50,fwdPE:null,peg:3.11,ps:17.9,gr:-24,rsi:40,eg:'~$75'},
-  CDLX:{t:'spec',trailPE:null,fwdPE:null,peg:null,ps:0.1,gr:-36,rsi:45,eg:'n/m (distressed)'},
-  BMNR:{t:'spec',trailPE:null,fwdPE:25.3,peg:null,ps:null,gr:null,rsi:67,eg:'n/m (NAV-based)'},
-  CRWV:{t:'spec',trailPE:null,fwdPE:null,peg:null,ps:6.1,gr:112,rsi:45,eg:'n/m (hypergrowth)'}
+  TSLA:{t:'egregious',trailPE:358,fwdPE:165,peg:4.3,ps:13.6,gr:26,rsi:53,eg:'already'},
+  ARM:{t:'egregious',trailPE:371,fwdPE:76.7,peg:1.9,ps:48.6,gr:22,rsi:38,eg:'already'},
+  NET:{t:'egregious',trailPE:null,fwdPE:163,peg:2.4,ps:38.7,gr:36,rsi:48,eg:'already'},
+  CRWD:{t:'egregious',trailPE:null,fwdPE:127,peg:6.9,ps:38.6,gr:26,rsi:54,eg:'already'},
+  HIMS:{t:'overvalued',trailPE:null,fwdPE:28.6,peg:2.6,ps:2.6,gr:38,rsi:45,eg:'~$50 (PEG trips first)'},
+  BLLN:{t:'overvalued',trailPE:239,fwdPE:64.7,peg:null,ps:11.4,gr:64,rsi:39,eg:'~$150 (noisy fwd EPS)'},
+  NBIS:{t:'overvalued',trailPE:83,fwdPE:null,peg:null,ps:40.9,gr:454,rsi:44,eg:'~$320 (judgment)'},
+  PLTR:{t:'overvalued',trailPE:145,fwdPE:73.2,peg:1.7,ps:66,gr:93,rsi:62,eg:'~$230'},
+  COIN:{t:'overvalued',trailPE:61,fwdPE:63.9,peg:0.8,ps:7.6,gr:-17,rsi:54,eg:'~$275 (fwd EPS cut; was ~$470)'},
+  HOOD:{t:'fair',trailPE:55,fwdPE:32.6,peg:1.8,ps:19.5,gr:32,rsi:53,eg:'~$190 (P/S 35 on 32% growth)'},
+  MRVL:{t:'fair',trailPE:84,fwdPE:30.7,peg:1.1,ps:19.6,gr:36,rsi:45,eg:'~$370 (P/S 35 on 36% growth)'},
+  ASML:{t:'fair',trailPE:60,fwdPE:28,peg:1.5,ps:18.3,gr:21,rsi:40,eg:'~$3,200 (P/S 35)'},
+  U:{t:'fair',trailPE:null,fwdPE:23.4,peg:null,ps:8.8,gr:24,rsi:49,eg:'~$160'},
+  NOW:{t:'fair',trailPE:63,fwdPE:27.3,peg:1,ps:9.6,gr:24,rsi:67,eg:'~$500'},
+  AMZN:{t:'fair',trailPE:32,fwdPE:24.5,peg:1.5,ps:3.5,gr:20,rsi:46,eg:'~$770 (PEG 4.5)'},
+  MSFT:{t:'fair',trailPE:23,fwdPE:21.1,peg:1.6,ps:11.1,gr:18,rsi:63,eg:'~$940 (cap-gravity)'},
+  AMD:{t:'cheap',trailPE:173,fwdPE:29.6,peg:0.48,ps:18.1,gr:50,rsi:43,eg:'~$1,500 (fwd PE 100)'},
+  AMKR:{t:'cheap',trailPE:40,fwdPE:16.8,peg:0.76,ps:1.6,gr:26,rsi:37,eg:'~$280'},
+  NVDA:{t:'cheap',trailPE:30,fwdPE:14.6,peg:0.56,ps:17.9,gr:106,rsi:52,eg:'~$285 (cap-gravity)'},
+  MU:{t:'cheap',trailPE:22,fwdPE:6.2,peg:0.14,ps:12,gr:346,rsi:50,eg:'n/m (cycle-peak EPS)'},
+  META:{t:'cheap',trailPE:21,fwdPE:17,peg:0.77,ps:6.6,gr:28,rsi:50,eg:'~$2,760 (cap-gravity)'},
+  Z:{t:'cheap',trailPE:134,fwdPE:12.4,peg:0.93,ps:2.8,gr:18,rsi:45,eg:'~$165 (PEG 4.5)'},
+  UPST:{t:'cheap',trailPE:85,fwdPE:8.3,peg:null,ps:2.1,gr:42,rsi:40,eg:'~$340'},
+  RKT:{t:'cheap',trailPE:null,fwdPE:15.6,peg:0.53,ps:3.7,gr:92,rsi:41,eg:'~$85 (fwd PE 100)'},
+  COUR:{t:'cheap',trailPE:null,fwdPE:7.4,peg:null,ps:2,gr:60,rsi:56,eg:'~$85'},
+  FIVN:{t:'cheap',trailPE:36,fwdPE:8.8,peg:0.26,ps:2.1,gr:10,rsi:62,eg:'~$380'},
+  AGNT:{t:'spec',trailPE:null,fwdPE:13.3,peg:null,ps:0.1,gr:11,rsi:38,eg:'~$30'},
+  IREN:{t:'spec',trailPE:50,fwdPE:null,peg:3.1,ps:22.1,gr:-27,rsi:43,eg:'~$75 (judgment; ~$150 at 100x FY28 EPS)'},
+  CDLX:{t:'spec',trailPE:null,fwdPE:null,peg:null,ps:0.1,gr:-36,rsi:37,eg:'n/m (distressed)'},
+  BMNR:{t:'spec',trailPE:null,fwdPE:null,peg:null,ps:null,gr:null,rsi:60,eg:'n/m (NAV-based)'},
+  CRWV:{t:'spec',trailPE:null,fwdPE:null,peg:null,ps:5.9,gr:112,rsi:43,eg:'n/m (2028E EPS $0.38, range -$2.63 to +$6.64)'}
 };
 const VAL_2030 = {
   TSLA:{fwdPE:174,c:83.6,b:1.8,note:"Bull is entirely ARK's robotaxi model (2030 EPS ~$230); strip robotaxi and ARK's own target collapses to ~$350.",sources:[['stockanalysis','https://stockanalysis.com/stocks/tsla/forecast/'],['ARK 2029 model','https://www.ark-invest.com/articles/valuation-models/arks-tesla-price-target-2029'],['Zacks','https://www.zacks.com/stock/quote/TSLA']]},
@@ -112,22 +112,22 @@ const VAL_2030 = {
 const dash = v => v == null ? '<span class="muted">—</span>' : v;
 const rsiCell = v => { if (v == null) return '—'; const c = v >= 70 ? '#dc2626' : v <= 30 ? '#059669' : '#6b7280'; return `<span style="color:${c};font-weight:700">${v}</span>`; };
 const QT = {
-  TSLA:{gm:19,fcf:0.4,r40:30,p200:-13,hi:-30}, ARM:{gm:98,fcf:0.5,r40:48,p200:20,hi:-47},
-  NET:{gm:73,fcf:0.6,r40:63,p200:36,hi:-10}, CRWD:{gm:75,fcf:0.9,r40:63,p200:55,hi:-5},
-  HIMS:{gm:70,fcf:12.6,r40:71,p200:1,hi:-56}, NBIS:{gm:74,fcf:-16.9,r40:null,p200:38,hi:-30},
-  HOOD:{gm:92,fcf:null,r40:null,p200:9,hi:-32}, PLTR:{gm:85,fcf:0.5,r40:128,p200:23,hi:-10},
-  COIN:{gm:86,fcf:5.7,r40:27,p200:-9,hi:-56}, MRVL:{gm:52,fcf:1.1,r40:60,p200:46,hi:-34},
-  ASML:{gm:53,fcf:1.3,r40:45,p200:16,hi:-15}, U:{gm:76,fcf:3.1,r40:53,p200:35,hi:-17},
-  BLLN:{gm:71,fcf:0.3,r40:67,p200:-2,hi:-38},
-  IREN:{gm:69,fcf:-33.5,r40:null,p200:-23,hi:-54}, AMD:{gm:56,fcf:1.2,r40:72,p200:39,hi:-20},
-  NOW:{gm:75,fcf:3.4,r40:59,p200:21,hi:-26}, AMKR:{gm:16,fcf:-3.2,r40:21,p200:-14,hi:-50},
-  AMZN:{gm:51,fcf:0.1,r40:20,p200:12,hi:-7}, MSFT:{gm:68,fcf:0.4,r40:23,p200:19,hi:-7},
-  NVDA:{gm:75,fcf:0.8,r40:120,p200:11,hi:-8}, MU:{gm:73,fcf:0.7,r40:null,p200:59,hi:-26},
-  META:{gm:82,fcf:1.5,r40:37,p200:-7,hi:-27}, Z:{gm:73,fcf:3.0,r40:27,p200:-25,hi:-62},
-  UPST:{gm:83,fcf:-4.7,r40:32,p200:-15,hi:-60}, RKT:{gm:100,fcf:-9.1,r40:57,p200:-15,hi:-43},
-  COUR:{gm:56,fcf:19.8,r40:101,p200:3,hi:-47}, FIVN:{gm:55,fcf:10.2,r40:32,p200:63,hi:-3},
-  AGNT:{gm:7,fcf:14.0,r40:13,p200:-38,hi:-65}, CDLX:{gm:49,fcf:58.2,r40:-29,p200:-51,hi:-88},
-  BMNR:{gm:84,fcf:-3.6,r40:null,p200:5,hi:-64}, CRWV:{gm:67,fcf:-19.6,r40:-7,p200:-8,hi:-45}
+  TSLA:{gm:19,fcf:0.3,r40:30,p200:-11,hi:-28}, ARM:{gm:98,fcf:0.5,r40:48,p200:17,hi:-48},
+  NET:{gm:73,fcf:0.7,r40:63,p200:23,hi:-18}, CRWD:{gm:75,fcf:1,r40:63,p200:44,hi:-13},
+  HIMS:{gm:70,fcf:12.7,r40:71,p200:1,hi:-56}, BLLN:{gm:71,fcf:0.3,r40:67,p200:1,hi:-36},
+  NBIS:{gm:74,fcf:-17.3,r40:null,p200:34,hi:-32}, HOOD:{gm:92,fcf:null,r40:null,p200:12,hi:-30},
+  PLTR:{gm:85,fcf:0.5,r40:128,p200:12,hi:-18}, COIN:{gm:86,fcf:5.8,r40:27,p200:-10,hi:-56},
+  MRVL:{gm:52,fcf:1.3,r40:62,p200:38,hi:-37}, ASML:{gm:53,fcf:1.3,r40:45,p200:14,hi:-16},
+  U:{gm:76,fcf:3.3,r40:53,p200:27,hi:-22}, AMD:{gm:56,fcf:1.2,r40:72,p200:35,hi:-22},
+  NOW:{gm:75,fcf:3.6,r40:59,p200:15,hi:-30}, AMZN:{gm:51,fcf:0.1,r40:20,p200:7,hi:-11},
+  MSFT:{gm:68,fcf:0.4,r40:23,p200:15,hi:-10}, AMKR:{gm:16,fcf:-3.2,r40:21,p200:-16,hi:-51},
+  NVDA:{gm:75,fcf:0.8,r40:120,p200:14,hi:-5}, MU:{gm:73,fcf:0.7,r40:null,p200:61,hi:-24},
+  META:{gm:82,fcf:1.4,r40:37,p200:-5,hi:-25}, Z:{gm:73,fcf:3.1,r40:27,p200:-27,hi:-63},
+  UPST:{gm:83,fcf:-4.8,r40:32,p200:-18,hi:-61}, RKT:{gm:100,fcf:-9.3,r40:57,p200:-16,hi:-44},
+  COUR:{gm:56,fcf:20.9,r40:101,p200:-2,hi:-50}, FIVN:{gm:55,fcf:10.4,r40:32,p200:60,hi:-4},
+  AGNT:{gm:7,fcf:14.8,r40:13,p200:-41,hi:-67}, IREN:{gm:69,fcf:-27,r40:null,p200:-13,hi:-48},
+  CDLX:{gm:49,fcf:62.9,r40:-29,p200:-54,hi:-89}, BMNR:{gm:84,fcf:-3.7,r40:null,p200:3,hi:-65},
+  CRWV:{gm:67,fcf:-20.4,r40:-7,p200:-11,hi:-47}
 };
 (function scorecard() {
   const rows = Object.keys(D).map(tk => ({ tk, ...D[tk] }));
